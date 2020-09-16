@@ -55,8 +55,26 @@ func NewMysqlProductRepository(DbConn *gorm.DB) ProductRepository {
 func (m *mysqlProductRepository) GetProducts() ([]models.Product, error) {
 	var products []models.Product
 	result := m.DbConnection.Table("product").Find(&products)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return products, nil
+	return products, result.Error
+}
+
+func (m *mysqlProductRepository) GetProductById(id int64) (models.Product, error) {
+	var product models.Product
+	result := m.DbConnection.Table("product").First(&product, id)
+	return product, result.Error
+}
+
+func (m *mysqlProductRepository) CreateProduct(product models.Product) (models.Product, error) {
+	result := m.DbConnection.Table("product").Create(&product)
+	return product, result.Error
+}
+
+func (m *mysqlProductRepository) UpdateProduct(product models.Product) (models.Product, error) {
+	result := m.DbConnection.Table("product").Save(&product)
+	return product, result.Error
+}
+
+func (m *mysqlProductRepository) DeleteProduct(product models.Product) (models.Product, error) {
+	result := m.DbConnection.Table("product").Delete(&product)
+	return product, result.Error
 }
